@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "deb http://cz.archive.ubuntu.com/ubuntu mantic main" | sudo tee /etc/apt/sources.list.d/temporary-repository.list
           sudo apt update
-          sudo apt install -y gcc-13 gcc-13-aarch64-linux-gnu
+          sudo apt-get -t mantic install -y gcc-13 gcc-13-aarch64-linux-gnu || true
           sudo rm /etc/apt/sources.list.d/temporary-repository.list
           sudo apt update
 
