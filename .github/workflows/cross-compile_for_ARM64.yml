@@ -1,0 +1,33 @@
+name: Cross-compile for ARM64
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install ARM64 cross-compiler
+        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+      - name: Cross-compile to ARM64
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchain_aarch64.cmake
+          make
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: aarch64-binary
+          path: ./build/mybinary
