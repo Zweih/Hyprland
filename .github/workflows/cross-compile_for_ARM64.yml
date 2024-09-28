@@ -16,18 +16,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install ARM64 cross-compiler
-        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-
-      - name: Cross-compile to ARM64
+      - name: Install dependencies for Hyprland build
         run: |
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchain_aarch64.cmake
-          make
+          sudo apt-get update
+          sudo apt-get install -y meson wget build-essential ninja-build cmake-extras cmake gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libtomlplusplus3
+
+      - name: Build Hyprland for aarch64
+        run: |
+          git clone --recursive https://github.com/hyprwm/Hyprland
+          cd Hyprland
+          cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain_aarch64.cmake -B build
+          cmake --build build --config Release --target all
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: aarch64-binary
-          path: ./build/mybinary
+          name: hyprland-aarch64-binary
+          path: ./Hyprland/build/Hyprland
