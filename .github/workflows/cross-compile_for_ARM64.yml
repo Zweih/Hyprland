@@ -16,10 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies for Hyprland build
+      - name: Install ARM64 cross-compiler and dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y meson wget build-essential ninja-build cmake-extras cmake gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu meson wget build-essential ninja-build cmake-extras cmake gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev
 
       - name: Install tomlplusplus from source
         run: |
@@ -34,8 +34,8 @@ jobs:
         run: |
           echo "set(CMAKE_SYSTEM_NAME Linux)" > toolchain_aarch64.cmake
           echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain_aarch64.cmake
-          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> toolchain_aarch64.cmake
-          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_C_COMPILER /usr/bin/aarch64-linux-gnu-gcc)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_CXX_COMPILER /usr/bin/aarch64-linux-gnu-g++)" >> toolchain_aarch64.cmake
           echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> toolchain_aarch64.cmake
           echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> toolchain_aarch64.cmake
           echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> toolchain_aarch64.cmake
@@ -45,7 +45,7 @@ jobs:
         run: |
           git clone --recursive https://github.com/hyprwm/Hyprland
           cd Hyprland
-          cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain_aarch64.cmake -B build
+          cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain_aarch64.cmake -DCMAKE_MAKE_PROGRAM=ninja -B build
           cmake --build build --config Release --target all
 
       - name: Upload binary
