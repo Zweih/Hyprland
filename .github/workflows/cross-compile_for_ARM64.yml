@@ -13,15 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Use v4 for checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install ARM64 cross-compiler and dependencies
+      - name: Install GCC 12 and ARM64 cross-compiler
         run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
-            meson wget build-essential cmake-extras cmake gettext gettext-base \
+          sudo apt-get install -y gcc-12 g++-12 gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 12
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 12
+          sudo update-alternatives --install /usr/bin/aarch64-linux-gnu-gcc aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc-12 12
+          sudo update-alternatives --install /usr/bin/aarch64-linux-gnu-g++ aarch64-linux-gnu-g++ /usr/bin/aarch64-linux-gnu-g++-12 12
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y meson wget build-essential cmake-extras cmake gettext gettext-base \
             fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev \
             libxkbcommon-x11-dev libxkbregistry-dev libxkbcommon-dev libpixman-1-dev \
             libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 \
