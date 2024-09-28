@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Use v4 for checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -28,7 +29,17 @@ jobs:
             libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev \
             libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev \
             libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libopengl-dev \
-            libgles2-mesa-dev
+            libgles2-mesa-dev pkg-config
+
+      - name: Install hyprutils from source
+        run: |
+          git clone https://github.com/hyprwm/hyprutils.git
+          cd hyprutils
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+          make
+          sudo make install
 
       - name: Set up environment variables for OpenGL
         run: |
