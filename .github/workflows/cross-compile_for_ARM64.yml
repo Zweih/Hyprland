@@ -16,11 +16,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install GCC 13 and ARM64 cross-compiler
+      - name: Add Ubuntu 23.10 repository and install GCC 13
         run: |
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get install -y gcc-13 g++-13 gcc-13-aarch64-linux-gnu g++-13-aarch64-linux-gnu
+          echo "deb http://cz.archive.ubuntu.com/ubuntu mantic main" | sudo tee /etc/apt/sources.list.d/temporary-repository.list
+          sudo apt update
+          sudo apt install -y gcc-13 gcc-13-aarch64-linux-gnu
+          sudo rm /etc/apt/sources.list.d/temporary-repository.list
+          sudo apt update
+
+      - name: Set GCC 13 as default
+        run: |
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 13
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 13
           sudo update-alternatives --install /usr/bin/aarch64-linux-gnu-gcc aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc-13 13
