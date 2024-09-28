@@ -30,6 +30,17 @@ jobs:
           cmake .. -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
 
+      - name: Create aarch64 toolchain file
+        run: |
+          echo "set(CMAKE_SYSTEM_NAME Linux)" > toolchain_aarch64.cmake
+          echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> toolchain_aarch64.cmake
+          echo "set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)" >> toolchain_aarch64.cmake
+
       - name: Build Hyprland for aarch64
         run: |
           git clone --recursive https://github.com/hyprwm/Hyprland
